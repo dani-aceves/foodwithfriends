@@ -1,6 +1,8 @@
 import 'dart:collection';
+import 'package:foodwithfriends/blocs/app_blocs.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class GMap extends StatefulWidget {
   GMap({Key key}) : super(key: key);
@@ -37,23 +39,30 @@ class _GMapState extends State<GMap> {
 
   @override
   Widget build(BuildContext context) {
+    final applicationBloc = Provider.of<AppBloc>(context);
     return Scaffold(
-        body: ListView(
-      children: [
-        TextField(
-          decoration: InputDecoration(hintText: 'Search for Food'),
-        ),
-        Container(
-            height: 300.0,
-            child: GoogleMap(
-              mapType: MapType.normal,
-              myLocationButtonEnabled: true,
-              initialCameraPosition: CameraPosition(
-                target: LatLng(40.7128, -87.6298),
-                zoom: 5,
-              ),
-            ))
-      ],
-    ));
+        body: (applicationBloc.currentLocation == null)
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : ListView(
+                children: [
+                  TextField(
+                    decoration: InputDecoration(hintText: 'Search for Food'),
+                  ),
+                  Container(
+                      height: 300.0,
+                      child: GoogleMap(
+                        mapType: MapType.normal,
+                        myLocationButtonEnabled: true,
+                        initialCameraPosition: CameraPosition(
+                          target: LatLng(
+                              applicationBloc.currentLocation.latitude,
+                              applicationBloc.currentLocation.longitude),
+                          zoom: 14,
+                        ),
+                      ))
+                ],
+              ));
   }
 }
