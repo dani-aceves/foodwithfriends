@@ -18,7 +18,7 @@ class _GMapState extends State<GMap> {
       _markers.add(
         Marker(
           markerId: MarkerId("D"),
-          position: LatLng(37.77483, -122.41942),
+          position: LatLng(40.7128, 74.0060),
           infoWindow: InfoWindow(
             title: "San Francisco",
             snippet: "A cool City",
@@ -38,21 +38,21 @@ class _GMapState extends State<GMap> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Stack(
-      children: <Widget>[
-        GoogleMap(
-          onMapCreated: _onMapCreated,
-          initialCameraPosition: CameraPosition(
-            target: LatLng(37.77483, -122.41942),
-            zoom: 12,
-          ),
-          markers: _markers,
-          myLocationButtonEnabled: true,
+        body: ListView(
+      children: [
+        TextField(
+          decoration: InputDecoration(hintText: 'Search for Food'),
         ),
         Container(
-            alignment: Alignment.bottomCenter,
-            padding: EdgeInsets.fromLTRB(0, 0, 0, 32),
-            child: Text('my first map app'))
+            height: 300.0,
+            child: GoogleMap(
+              mapType: MapType.normal,
+              myLocationButtonEnabled: true,
+              initialCameraPosition: CameraPosition(
+                target: LatLng(40.7128, -87.6298),
+                zoom: 5,
+              ),
+            ))
       ],
     ));
   }
