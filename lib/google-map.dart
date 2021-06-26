@@ -25,20 +25,35 @@ class _GMapState extends State<GMap> {
           ),
         ),
       );
+      _setMapStyle();
     });
+  }
+
+  void _setMapStyle() async {
+    String style = await DefaultAssetBundle.of(context)
+        .loadString('assets/map_style.json');
+    _mapController.setMapStyle(style);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GoogleMap(
-        onMapCreated: _onMapCreated,
-        initialCameraPosition: CameraPosition(
-          target: LatLng(37.77483, -122.41942),
-          zoom: 12,
+        body: Stack(
+      children: <Widget>[
+        GoogleMap(
+          onMapCreated: _onMapCreated,
+          initialCameraPosition: CameraPosition(
+            target: LatLng(37.77483, -122.41942),
+            zoom: 12,
+          ),
+          markers: _markers,
+          myLocationButtonEnabled: true,
         ),
-        markers: _markers,
-      ),
-    );
+        Container(
+            alignment: Alignment.bottomCenter,
+            padding: EdgeInsets.fromLTRB(0, 0, 0, 32),
+            child: Text('my first map app'))
+      ],
+    ));
   }
 }
