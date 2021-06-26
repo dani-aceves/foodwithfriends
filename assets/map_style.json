@@ -8,10 +8,11 @@
     ]
   },
   {
-    "featureType": "poi.business",
+    "featureType": "poi.attraction",
+    "elementType": "labels.icon",
     "stylers": [
       {
-        "color": "#ffeb3b"
+        "visibility": "off"
       }
     ]
   },
@@ -74,7 +75,10 @@
     "elementType": "labels.text.stroke",
     "stylers": [
       {
-        "visibility": "off"
+        "color": "#ffeb3b"
+      },
+      {
+        "visibility": "on"
       }
     ]
   },
@@ -88,6 +92,42 @@
   },
   {
     "featureType": "poi.medical",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.park",
+    "elementType": "labels.icon",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.place_of_worship",
+    "elementType": "labels.icon",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.school",
+    "elementType": "labels.icon",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.sports_complex",
+    "elementType": "labels.icon",
     "stylers": [
       {
         "visibility": "off"
