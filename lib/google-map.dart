@@ -47,21 +47,60 @@ class _GMapState extends State<GMap> {
               )
             : ListView(
                 children: [
-                  TextField(
-                    decoration: InputDecoration(hintText: 'Search for Food'),
-                  ),
-                  Container(
-                      height: 300.0,
-                      child: GoogleMap(
-                        mapType: MapType.normal,
-                        myLocationButtonEnabled: true,
-                        initialCameraPosition: CameraPosition(
-                          target: LatLng(
-                              applicationBloc.currentLocation.latitude,
-                              applicationBloc.currentLocation.longitude),
-                          zoom: 14,
+                  Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: TextField(
+                        decoration: InputDecoration(
+                          hintText: 'Search for Food',
+                          suffixIcon: Icon(Icons.search),
                         ),
-                      ))
+                        onChanged: (value) =>
+                            applicationBloc.searchPlaces(value),
+                      )),
+                  Stack(
+                    children: [
+                      Container(
+                        height: 400.0,
+                        child: GoogleMap(
+                          mapType: MapType.normal,
+                          myLocationButtonEnabled: true,
+                          initialCameraPosition: CameraPosition(
+                            target: LatLng(
+                                applicationBloc.currentLocation.latitude,
+                                applicationBloc.currentLocation.longitude),
+                            zoom: 14,
+                          ),
+                        ),
+                      ),
+                      if (applicationBloc.searchResults != null &&
+                          applicationBloc.searchResults.length != 0)
+                        Container(
+                          height: 400,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            backgroundBlendMode: BlendMode.darken,
+                            color: Colors.black.withOpacity(.6),
+                          ),
+                        ),
+                      if (applicationBloc.searchResults != null &&
+                          applicationBloc.searchResults.length != 0)
+                        Container(
+                          height: 400.0,
+                          child: ListView.builder(
+                            itemCount: applicationBloc.searchResults.length,
+                            itemBuilder: (context, index) {
+                              return ListTile(
+                                title: Text(
+                                  applicationBloc
+                                      .searchResults[index].description,
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              );
+                            },
+                          ),
+                        )
+                    ],
+                  )
                 ],
               ));
   }
