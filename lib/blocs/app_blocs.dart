@@ -7,19 +7,24 @@ import 'package:foodwithfriends/models/location.dart';
 import 'package:foodwithfriends/models/place.dart';
 import 'package:foodwithfriends/models/place_search.dart';
 import 'package:foodwithfriends/services/geolocator_service.dart';
+import 'package:foodwithfriends/services/markers_service.dart';
 import 'package:foodwithfriends/services/places_service.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class AppBloc with ChangeNotifier {
   final geoLocatorService = GeolocatorService();
   final placesService = PlacesService();
+  final markerService = MarkerService();
 
   //variables
   Position currentLocation;
   List<PlaceSearch> searchResults;
   StreamController<Place> selectedLocation = StreamController<Place>();
+  StreamController<LatLngBounds> bounds = StreamController<LatLngBounds>();
   Place selectedLocationStatic;
   String placeType;
+  List<Marker> markers = List<Marker>();
 
   AppBloc() {
     setCurrentLocation();
@@ -64,6 +69,18 @@ class AppBloc with ChangeNotifier {
           selectedLocationStatic.geometry.location.lat,
           selectedLocationStatic.geometry.location.lng,
           placeType);
+      markers = [];
+      if (places.length > 0) {
+        var newMarker = markerService.createMarkerFromPlace(places[0], false);
+        markers.add(newMarker);
+      }
+
+      var locationMarker =
+          markerService.createMarkerFromPlace(selectedLocationStatic, true);
+      markers.add(locationMarker);
+
+      var _bounds = markerService.bounds(Set<Marker>.of(markers));
+      bounds.add(_bounds);
     }
     notifyListeners();
   }

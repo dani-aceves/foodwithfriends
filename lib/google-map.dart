@@ -18,29 +18,8 @@ class _GMapState extends State<GMap> {
 
   Completer<GoogleMapController> _mapController = Completer();
   StreamSubscription locationSubscription;
+  StreamSubscription boundsSubscription;
 
-  // void _onMapCreated(GoogleMapController controller) {
-  //   _mapController = controller;
-  //   setState(() {
-  //     _markers.add(
-  //       Marker(
-  //         markerId: MarkerId("D"),
-  //         position: LatLng(40.7128, 74.0060),
-  //         infoWindow: InfoWindow(
-  //           title: "San Francisco",
-  //           snippet: "A cool City",
-  //         ),
-  //       ),
-  //     );
-  //     _setMapStyle();
-  //   });
-  // }
-
-  // void _setMapStyle() async {
-  //   String style = await DefaultAssetBundle.of(context)
-  //       .loadString('assets/map_style.json');
-  //   _mapController.setMapStyle(style);
-  // }
   @override
   void initState() {
     final applicationBloc = Provider.of<AppBloc>(context, listen: false);
@@ -50,6 +29,12 @@ class _GMapState extends State<GMap> {
         _goToPlace(place);
       }
     });
+    boundsSubscription = applicationBloc.bounds.stream.listen((bounds) async {
+      final GoogleMapController controller = await _mapController.future;
+      controller.animateCamera(
+        CameraUpdate.newLatLngBounds(bounds, 50.0),
+      );
+    });
     super.initState();
   }
 
@@ -58,6 +43,7 @@ class _GMapState extends State<GMap> {
     final applicationBloc = Provider.of<AppBloc>(context, listen: false);
     applicationBloc.dispose();
     locationSubscription.cancel();
+    boundsSubscription.cancel();
     super.dispose();
   }
 
@@ -86,6 +72,7 @@ class _GMapState extends State<GMap> {
                       height: 400.0,
                       child: GoogleMap(
                           mapType: MapType.normal,
+                          markers: Set<Marker>.of(applicationBloc.markers),
                           myLocationButtonEnabled: true,
                           initialCameraPosition: CameraPosition(
                             target: LatLng(
