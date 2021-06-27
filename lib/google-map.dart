@@ -17,6 +17,7 @@ class _GMapState extends State<GMap> {
   Set<Marker> _markers = HashSet<Marker>();
 
   Completer<GoogleMapController> _mapController = Completer();
+  StreamSubscription locationSubscription;
 
   // void _onMapCreated(GoogleMapController controller) {
   //   _mapController = controller;
@@ -40,6 +41,25 @@ class _GMapState extends State<GMap> {
   //       .loadString('assets/map_style.json');
   //   _mapController.setMapStyle(style);
   // }
+  @override
+  void initState() {
+    final applicationBloc = Provider.of<AppBloc>(context, listen: false);
+    locationSubscription =
+        applicationBloc.selectedLocation.stream.listen((place) {
+      if (place != null) {
+        _goToPlace(place);
+      }
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    final applicationBloc = Provider.of<AppBloc>(context, listen: false);
+    applicationBloc.dispose();
+    locationSubscription.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,15 +85,17 @@ class _GMapState extends State<GMap> {
                     Container(
                       height: 400.0,
                       child: GoogleMap(
-                        mapType: MapType.normal,
-                        myLocationButtonEnabled: true,
-                        initialCameraPosition: CameraPosition(
-                          target: LatLng(
-                              applicationBloc.currentLocation.latitude,
-                              applicationBloc.currentLocation.longitude),
-                          zoom: 14,
-                        ),
-                      ),
+                          mapType: MapType.normal,
+                          myLocationButtonEnabled: true,
+                          initialCameraPosition: CameraPosition(
+                            target: LatLng(
+                                applicationBloc.currentLocation.latitude,
+                                applicationBloc.currentLocation.longitude),
+                            zoom: 14,
+                          ),
+                          onMapCreated: (GoogleMapController controller) {
+                            _mapController.complete(controller);
+                          }),
                     ),
                     if (applicationBloc.searchResults != null &&
                         applicationBloc.searchResults.length != 0)
@@ -98,6 +120,11 @@ class _GMapState extends State<GMap> {
                                     .searchResults[index].description,
                                 style: TextStyle(color: Colors.white),
                               ),
+                              onTap: () {
+                                applicationBloc.setSelectedLocation(
+                                    applicationBloc
+                                        .searchResults[index].placeId);
+                              },
                             );
                           },
                         ),
