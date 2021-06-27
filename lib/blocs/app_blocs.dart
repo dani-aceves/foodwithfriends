@@ -1,6 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:foodwithfriends/models/geometry.dart';
+import 'package:foodwithfriends/models/location.dart';
 import 'package:foodwithfriends/models/place.dart';
 import 'package:foodwithfriends/models/place_search.dart';
 import 'package:foodwithfriends/services/geolocator_service.dart';
@@ -15,6 +18,8 @@ class AppBloc with ChangeNotifier {
   Position currentLocation;
   List<PlaceSearch> searchResults;
   StreamController<Place> selectedLocation = StreamController<Place>();
+  Place selectedLocationStatic;
+  String placeType;
 
   AppBloc() {
     setCurrentLocation();
@@ -22,6 +27,15 @@ class AppBloc with ChangeNotifier {
 
   setCurrentLocation() async {
     currentLocation = await geoLocatorService.getCurrentLocation();
+    selectedLocationStatic = Place(
+      name: null,
+      geometry: Geometry(
+        location: Location(
+          lat: currentLocation.latitude,
+          lng: currentLocation.longitude,
+        ),
+      ),
+    );
     notifyListeners();
   }
 
@@ -31,8 +45,26 @@ class AppBloc with ChangeNotifier {
   }
 
   setSelectedLocation(String placeId) async {
-    selectedLocation.add(await placesService.getPlace(placeId));
+    var sLocation = await placesService.getPlace(placeId);
+    selectedLocation.add(sLocation);
+    selectedLocationStatic = sLocation;
     searchResults = null;
+    notifyListeners();
+  }
+
+  togglePlaceType(String value, bool selected) async {
+    if (selected) {
+      placeType = value;
+    } else {
+      placeType = null;
+    }
+
+    if (placeType != null) {
+      var places = await placesService.getPlaces(
+          selectedLocationStatic.geometry.location.lat,
+          selectedLocationStatic.geometry.location.lng,
+          placeType);
+    }
     notifyListeners();
   }
 

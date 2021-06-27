@@ -130,6 +130,66 @@ class _GMapState extends State<GMap> {
                         ),
                       )
                   ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'Filter Nearest',
+                    style: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Wrap(
+                    spacing: 8.0,
+                    children: [
+                      FilterChip(
+                        label: Text('Campground'),
+                        onSelected: (val) =>
+                            applicationBloc.togglePlaceType('campground', val),
+                        selected: applicationBloc.placeType == 'campground',
+                        selectedColor: Colors.red,
+                      ),
+                      FilterChip(
+                        label: Text('Restaurant'),
+                        onSelected: (val) =>
+                            applicationBloc.togglePlaceType('restaurant', val),
+                        selected: applicationBloc.placeType == 'restaurant',
+                        selectedColor: Colors.orange,
+                      ),
+                      FilterChip(
+                        label: Text('Bar'),
+                        onSelected: (val) =>
+                            applicationBloc.togglePlaceType('bar', val),
+                        selected: applicationBloc.placeType == 'bar',
+                        selectedColor: Colors.yellow,
+                      ),
+                      FilterChip(
+                        label: Text('Cafe'),
+                        onSelected: (val) =>
+                            applicationBloc.togglePlaceType('cafe', val),
+                        selected: applicationBloc.placeType == 'cafe',
+                        selectedColor: Colors.green,
+                      ),
+                      FilterChip(
+                        label: Text('Delivery'),
+                        onSelected: (val) => applicationBloc.togglePlaceType(
+                            'meal_delivery', val),
+                        selected: applicationBloc.placeType == 'meal_delivery',
+                        selectedColor: Colors.blue,
+                      ),
+                      FilterChip(
+                        label: Text('Takeout'),
+                        onSelected: (val) => applicationBloc.togglePlaceType(
+                            'meal_takeaway', val),
+                        selected: applicationBloc.placeType == 'meal_takeaway',
+                        selectedColor: Colors.purple,
+                      ),
+                    ],
+                  ),
                 )
               ],
             ),
