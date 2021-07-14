@@ -1,6 +1,6 @@
 # foodwithfriends
 
-A new Flutter project.
+The beginnings of an app that will allow users to see their friends favorites restaurants on a map. Integrated with Google Maps and Google Places API and written in Dart with the Flutter environment.
 
 ## Getting Started
 
